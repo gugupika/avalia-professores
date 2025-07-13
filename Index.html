@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avalia Professores</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>⭐ Avalie Seu Professor</h1>
+        
+        <!-- Formulário de Avaliação -->
+        <div class="form-avaliacao">
+            <h2>Adicionar Avaliação</h2>
+            <input type="text" id="nome-professor" placeholder="Nome do Professor">
+            <input type="text" id="nome-curso" placeholder="Curso">
+            <input type="text" id="semestre" placeholder="Semestre">
+            
+            <select id="dificuldade">
+                <option value="facil">Fácil</option>
+                <option value="medio">Médio</option>
+                <option value="dificil">Difícil</option>
+            </select>
+            
+            <textarea id="comentario" placeholder="Comentários..."></textarea>
+            <button onclick="adicionarAvaliacao()">Enviar Avaliação</button>
+        </div>
+
+        <!-- Lista de Avaliações -->
+        <div class="avaliacoes">
+            <h2>Últimas Avaliações</h2>
+            <div id="lista-avaliacoes"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
