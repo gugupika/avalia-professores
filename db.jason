@@ -1,13 +1,31 @@
 {
   "avaliacoes": [
     {
-      "id": 1,  // ← Isso é ESSENCIAL
+      "id": 1,
       "area": "exatas",
-      "professor": "...",
-      "disciplina": "...",
+      "professor": "Carlos Silva",
+      "disciplina": "Cálculo II",
       "nota": 4,
-      "comentario": "...",
-      "data": "..."
+      "comentario": "Ótima didática!",
+      "data": "15/07/2023"
+    },
+    {
+      "id": 2,
+      "area": "humanas",
+      "professor": "Ana Oliveira",
+      "disciplina": "Filosofia Moderna",  ← Nova disciplina!
+      "nota": 5,
+      "comentario": "Aulas transformadoras!",
+      "data": "20/07/2023"
+    },
+    {
+      "id": 3,
+      "area": "biologicas",
+      "professor": "Luís Mendes",
+      "disciplina": "Genética Avançada",  ← Nova disciplina!
+      "nota": 3,
+      "comentario": "Conteúdo complexo",
+      "data": "18/07/2023"
     }
   ]
 }
