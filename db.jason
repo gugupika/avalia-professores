@@ -1,12 +1,14 @@
 {
-    "avaliacoes": [
-        {
-            "professor": "João Silva",
-            "curso": "Matemática",
-            "semestre": "2023.1",
-            "dificuldade": "medio",
-            "comentario": "Ótimo professor, mas as provas são difíceis.",
-            "data": "15/10/2023"
-        }
-    ]
+  "avaliacoes": [
+    {
+      "id": 1,
+      "professor": "Carlos Silva",
+      "area": "exatas",
+      "curso": "Engenharia",
+      "disciplina": "Cálculo II",
+      "nota": 4,
+      "comentario": "Ótimo professor, explica muito bem.",
+      "data": "15/07/2023"
+    }
+  ]
 }
