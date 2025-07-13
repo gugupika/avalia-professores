@@ -1,15 +1,15 @@
-// Variável global para armazenar a área selecionada
+// Configurações
+const API_URL = "http://localhost:3000/avaliacoes";
 let areaSelecionada = null;
 
-// Inicialização das estrelas
+// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    // Configura interação das estrelas
+    // Configura estrelas interativas
     document.querySelectorAll('.estrelas i').forEach(star => {
         star.addEventListener('click', function() {
             const value = parseInt(this.getAttribute('data-value'));
             document.getElementById('nota').value = value;
             
-            // Atualiza visualização
             document.querySelectorAll('.estrelas i').forEach((s, i) => {
                 if (i < value) {
                     s.classList.remove('far');
@@ -22,102 +22,138 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Configura envio do formulário
-    document.getElementById('form-avaliacao').addEventListener('submit', function(e) {
+    // Configura formulário
+    document.getElementById('form-avaliacao').addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        if (!areaSelecionada) {
+            alert("Selecione uma área primeiro!");
+            return;
+        }
+
         const avaliacao = {
             area: areaSelecionada,
-            professor: document.getElementById('professor').value,
-            disciplina: document.getElementById('disciplina').value,
+            professor: document.getElementById('professor').value.trim(),
+            disciplina: document.getElementById('disciplina').value.trim(),
             nota: parseInt(document.getElementById('nota').value),
-            comentario: document.getElementById('comentario').value,
+            comentario: document.getElementById('comentario').value.trim(),
             data: new Date().toLocaleDateString('pt-BR')
         };
 
-        // Envia para o JSON Server
-        fetch('http://localhost:3000/avaliacoes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(avaliacao)
-        }).then(response => {
-            if (response.ok) {
-                alert('Avaliação enviada com sucesso!');
-                this.reset();
-                // Reseta estrelas
-                document.querySelectorAll('.estrelas i').forEach(s => {
-                    s.classList.remove('fas', 'ativa');
-                    s.classList.add('far');
-                });
-                document.getElementById('nota').value = 0;
-            }
-        }).catch(error => {
-            console.error('Erro:', error);
-            alert('Erro ao enviar avaliação. Tente novamente.');
-        });
+        if (!avaliacao.professor || !avaliacao.disciplina || avaliacao.nota === 0) {
+            alert("Preencha todos os campos obrigatórios!");
+            return;
+        }
+
+        try {
+            await enviarAvaliacao(avaliacao);
+            alert('✅ Avaliação registrada!');
+            this.reset();
+            resetEstrelas();
+            carregarDisciplinas(areaSelecionada);
+        } catch (error) {
+            alert('❌ Erro: ' + error.message);
+        }
     });
 });
 
-// Função para carregar área selecionada
+// Funções principais
+async function enviarAvaliacao(avaliacao) {
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(avaliacao)
+    });
+    
+    if (!response.ok) throw new Error('Falha ao salvar');
+    return await response.json();
+}
+
+async function deletarAvaliacao(id) {
+    if (!confirm('Tem certeza que deseja apagar esta avaliação permanentemente?')) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE'
+        });
+        
+        if (!response.ok) throw new Error('Falha ao deletar');
+        carregarDisciplinas(areaSelecionada);
+    } catch (error) {
+        alert('Erro ao apagar: ' + error.message);
+    }
+}
+
+async function carregarDisciplinas(area) {
+    try {
+        const response = await fetch(`${API_URL}?area=${area}`);
+        const avaliacoes = await response.json();
+        
+        const container = document.getElementById('lista-disciplinas');
+        container.innerHTML = '';
+        
+        if (!avaliacoes || avaliacoes.length === 0) {
+            container.innerHTML = '<p class="text-muted">Nenhuma avaliação encontrada.</p>';
+            return;
+        }
+        
+        avaliacoes.forEach(aval => {
+            const card = document.createElement('div');
+            card.className = 'col-md-6 mb-4';
+            card.innerHTML = `
+                <div class="card ${aval.area}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title">${aval.disciplina}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Prof. ${aval.professor}</h6>
+                            </div>
+                            <button onclick="deletarAvaliacao(${aval.id})" 
+                                    class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="avaliacao-media my-2">
+                            ${'<i class="fas fa-star"></i>'.repeat(aval.nota)}
+                            ${'<i class="far fa-star"></i>'.repeat(5 - aval.nota)}
+                            <span class="ms-2">${aval.nota.toFixed(1)}</span>
+                        </div>
+                        ${aval.comentario ? `<p class="card-text">"${aval.comentario}"</p>` : ''}
+                        <small class="text-muted">Avaliado em ${aval.data}</small>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Erro ao carregar:", error);
+        document.getElementById('lista-disciplinas').innerHTML = `
+            <p class="text-danger">Erro ao carregar avaliações. Recarregue a página.</p>
+        `;
+    }
+}
+
+// Funções auxiliares
+function resetEstrelas() {
+    document.querySelectorAll('.estrelas i').forEach(s => {
+        s.classList.remove('fas', 'ativa');
+        s.classList.add('far');
+    });
+    document.getElementById('nota').value = 0;
+}
+
 function carregarArea(area) {
     areaSelecionada = area;
     document.getElementById('conteudo-dinamico').classList.remove('hidden');
-    
-    // Atualiza o título
     document.querySelector('.header-principal p').textContent = 
         `Área selecionada: ${area.charAt(0).toUpperCase() + area.slice(1)}`;
-    
-    // Carrega disciplinas da área
     carregarDisciplinas(area);
 }
 
-// Função para alternar entre abas
 function mostrarAba(aba) {
-    // Esconde todas as abas
-    document.querySelectorAll('.aba-conteudo').forEach(el => {
-        el.classList.add('hidden');
-    });
+    document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
     
-    // Mostra a aba selecionada
     document.getElementById(`aba-${aba}`).classList.remove('hidden');
-    
-    // Atualiza estado das abas
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
     event.target.classList.add('active');
-}
-
-// Função para carregar disciplinas (simulada)
-function carregarDisciplinas(area) {
-    // Simulação - na prática, você buscaria do JSON Server
-    const disciplinas = {
-        exatas: ['Cálculo', 'Física', 'Álgebra Linear'],
-        humanas: ['Filosofia', 'História', 'Sociologia'],
-        biologicas: ['Genética', 'Bioquímica', 'Anatomia'],
-        terra: ['Geologia', 'Oceanografia', 'Meteorologia']
-    };
-    
-    const container = document.getElementById('lista-disciplinas');
-    container.innerHTML = '';
-    
-    disciplinas[area].forEach(disciplina => {
-        const card = document.createElement('div');
-        card.className = 'col-md-6 mb-4';
-        card.innerHTML = `
-            <div class="card disciplina-card">
-                <div class="card-body">
-                    <h5 class="card-title">${disciplina}</h5>
-                    <div class="avaliacao-media mb-2">
-                        ${'<i class="fas fa-star"></i>'.repeat(4)}${'<i class="far fa-star"></i>'.repeat(1)}
-                        <span class="ms-2">4.2</span>
-                    </div>
-                    <button class="btn btn-sm btn-outline-primary">
-                        Ver Comentários
-                    </button>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-    });
 }
