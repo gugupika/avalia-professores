@@ -7,34 +7,109 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <!-- Firebase SDK -->
+    <!-- Firebase (adicione ANTES do script.js) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="container py-4">
+        <!-- Cabeçalho -->
         <header class="header-principal text-center mb-5">
-            <h1><i class="fas fa-chalkboard-teacher"></i> Avaliar Professores</h1>
+            <h1 class="display-4"><i class="fas fa-chalkboard-teacher"></i> Avaliar Professores</h1>
             <p class="lead">Selecione uma área para começar</p>
         </header>
 
         <!-- Cards de Áreas -->
-        <div class="row g-4" id="areas-container">
+        <div class="row g-4 mb-5" id="areas-container">
             <div class="col-md-3">
                 <div class="area-card exatas" onclick="selecionarArea('exatas')">
                     <i class="fas fa-calculator"></i>
                     <h3>Exatas</h3>
                 </div>
             </div>
-            <!-- (Repita para outras áreas) -->
+            <div class="col-md-3">
+                <div class="area-card humanas" onclick="selecionarArea('humanas')">
+                    <i class="fas fa-book"></i>
+                    <h3>Humanas</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="area-card biologicas" onclick="selecionarArea('biologicas')">
+                    <i class="fas fa-dna"></i>
+                    <h3>Biológicas</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="area-card terra" onclick="selecionarArea('terra')">
+                    <i class="fas fa-globe-americas"></i>
+                    <h3>Ciências da Terra</h3>
+                </div>
+            </div>
         </div>
 
         <!-- Conteúdo Dinâmico -->
-        <div id="conteudo-dinamico" class="mt-5 d-none">
-            <!-- Formulário e Listagem aqui -->
+        <div id="conteudo-dinamico" class="d-none">
+            <div class="text-center mb-4">
+                <h2 id="area-selecionada-texto" class="h4"></h2>
+            </div>
+
+            <!-- Abas -->
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <button class="nav-link active" onclick="mostrarAba('avaliar')">
+                        <i class="fas fa-edit"></i> Avaliar
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" onclick="mostrarAba('disciplinas')">
+                        <i class="fas fa-list"></i> Ver Avaliações
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Formulário -->
+            <div id="aba-avaliar" class="aba-conteudo">
+                <form id="form-avaliacao" class="form-centralizado">
+                    <div class="mb-3">
+                        <label for="professor" class="form-label">Professor:</label>
+                        <input type="text" id="professor" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="disciplina" class="form-label">Disciplina:</label>
+                        <input type="text" id="disciplina" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nota:</label>
+                        <div class="estrelas">
+                            <i class="far fa-star" data-value="1"></i>
+                            <i class="far fa-star" data-value="2"></i>
+                            <i class="far fa-star" data-value="3"></i>
+                            <i class="far fa-star" data-value="4"></i>
+                            <i class="far fa-star" data-value="5"></i>
+                            <input type="hidden" id="nota" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comentario" class="form-label">Comentário (opcional):</label>
+                        <textarea id="comentario" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-paper-plane"></i> Enviar Avaliação
+                    </button>
+                </form>
+            </div>
+
+            <!-- Lista de Disciplinas -->
+            <div id="aba-disciplinas" class="aba-conteudo d-none">
+                <div id="lista-disciplinas" class="row g-4"></div>
+            </div>
         </div>
     </div>
 
+    <!-- Container para alertas -->
+    <div id="alert-container" class="alert-container"></div>
+
+    <!-- Scripts -->
     <script src="script.js"></script>
 </body>
 </html>
