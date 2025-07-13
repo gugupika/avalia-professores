@@ -1,22 +1,13 @@
 {
   "avaliacoes": [
     {
-      "id": 1,
+      "id": 1,  // ← Isso é ESSENCIAL
       "area": "exatas",
-      "professor": "Carlos Silva",
-      "disciplina": "Cálculo II",
+      "professor": "...",
+      "disciplina": "...",
       "nota": 4,
-      "comentario": "Excelente didática e material de apoio.",
-      "data": "15/07/2023"
-    },
-    {
-      "id": 2,
-      "area": "humanas",
-      "professor": "Ana Oliveira",
-      "disciplina": "Filosofia Moderna",
-      "nota": 5,
-      "comentario": "Aulas transformadoras!",
-      "data": "10/07/2023"
+      "comentario": "...",
+      "data": "..."
     }
   ]
 }
