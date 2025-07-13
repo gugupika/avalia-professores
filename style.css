@@ -1,40 +1,40 @@
-/* Cores temáticas por área */
-.exatas { border-left: 4px solid #2196F3 !important; }
-.humanas { border-left: 4px solid #FF9800 !important; }
-.biologicas { border-left: 4px solid #4CAF50 !important; }
-.terra { border-left: 4px solid #795548 !important; }
+:root {
+    --exatas: #4285F4;
+    --humanas: #EA4335;
+    --biologicas: #34A853;
+    --terra: #FBBC05;
+}
 
-/* Estrelas de avaliação */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
 .estrelas {
+    color: #ddd;
     font-size: 24px;
     cursor: pointer;
 }
-.estrelas span {
-    color: #ddd;
-    transition: all 0.3s;
-}
-.estrelas span.ativa {
+
+.estrelas i.ativa {
     color: #FFD700;
 }
 
-/* Cards de avaliação */
-.avaliacao-item {
-    margin-bottom: 1.5rem;
+.avaliacao {
+    padding: 15px;
+    margin-bottom: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.media-nota {
-    font-weight: bold;
-    color: #FF6D00;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* Respostas e interações */
-.respostas {
-    margin-left: 2rem;
-    border-left: 2px solid #eee;
-    padding-left: 1rem;
-}
-.btn-like, .btn-resposta {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.5rem;
-}
+/* Cores por área */
+.avaliacao.exatas { border-left: 4px solid var(--exatas); }
+.avaliacao.humanas { border-left: 4px solid var(--humanas); }
+.avaliacao.biologicas { border-left: 4px solid var(--biologicas); }
+.avaliacao.terra { border-left: 4px solid var(--terra); }
